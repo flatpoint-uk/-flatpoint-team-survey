@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Кто вообще работает здесь? 👀</title>
+<style>
+:root{--bg:#f2efe7;--card:#fbfaf6;--ink:#121512;--muted:#7b7c75;--line:#d9d3c6;--green:#40584a}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.wrap{max-width:760px;margin:auto;padding:28px 22px 70px}.brand{font-weight:700;letter-spacing:.18em;color:var(--green);margin:10px 0 16vh}
+.card{background:var(--card);border:1px solid var(--line);border-radius:28px;padding:34px;box-shadow:0 15px 40px #00000008}
+.kicker{color:var(--muted);letter-spacing:.12em;text-transform:uppercase}.title{font:700 clamp(48px,10vw,78px)/.95 Georgia,serif;margin:22px 0}
+p{font-size:20px;line-height:1.5;color:var(--muted)} input,textarea{width:100%;font:inherit;border:1px solid var(--line);border-radius:18px;padding:18px;background:white}
+textarea{min-height:190px;resize:vertical}.btn{border:0;border-radius:999px;background:var(--ink);color:white;font-weight:700;padding:18px 24px;font-size:18px;cursor:pointer}
+.row{display:flex;gap:12px;margin-top:18px}.row .btn{flex:1}.secondary{background:#e8e4da;color:var(--ink)}
+.meta{display:flex;justify-content:space-between;gap:12px;color:var(--muted);margin-bottom:20px}.progress{height:6px;background:#e4dfd4;border-radius:99px;overflow:hidden;margin-bottom:28px}.bar{height:100%;background:var(--green)}
+.q{font:700 clamp(30px,6vw,46px)/1.08 Georgia,serif;margin:12px 0 18px}.helper{font-size:16px;margin-top:-5px}
+.hidden{display:none}@media(max-width:520px){.card{padding:28px 24px}.brand{margin-bottom:14vh}.row{flex-direction:column-reverse}}
+</style></head>
+<body><main class="wrap"><div class="brand">UraganAPART × FLATP( )INT</div>
+<section id="start" class="card">
+<div class="kicker">КОРПОРАТИВ • 6–8 СЕНТЯБРЯ</div><h1 class="title">Кто вообще<br>работает<br>здесь? 👀</h1>
+<p>Небольшое расследование перед нашей встречей. Отвечай честно, подробно и желательно не советуясь с коллегами 😁</p>
+<p>Некоторые ответы пригодятся для программы корпоратива — заранее не расскажем как именно.</p>
+<p><b>18 вопросов • ≈ 10–15 минут</b><br>Необязательно отвечать на всё за раз — черновик сохранится на этом устройстве.</p>
+<input id="name" placeholder="Имя и фамилия"><button class="btn" style="width:100%;margin-top:18px" onclick="begin()">Начать</button>
+</section>
+<section id="quiz" class="card hidden"><div class="meta"><span id="count"></span><span>≈ 10–15 минут</span></div><div class="progress"><div id="bar" class="bar"></div></div>
+<div id="question" class="q"></div><div id="helper" class="helper"></div><textarea id="answer" placeholder="Твой ответ..."></textarea>
+<div class="row"><button class="btn secondary" onclick="prev()">Назад</button><button id="next" class="btn" onclick="next()">Дальше</button></div></section>
+<section id="done" class="card hidden"><div class="kicker">ГОТОВО</div><h1 class="title">Принято.</h1><p>Теперь мы знаем о тебе чуть больше, чем следовало 😏</p><p>До встречи на корпоративе.</p></section></main>
+<script>
+const questions=[
+["Расскажи 2 факта о себе, которых, скорее всего, не знают коллеги."],
+["Кем ты мечтал(а) стать в детстве?"],
+["Была ли у тебя необычная работа или подработка? Какая?"],
+["Какой самый спонтанный или безумный поступок ты совершал(а)?"],
+["Какой у тебя есть навык или талант, о котором коллеги могут не знать?"],
+["Представь: тебе дали 300 000 ₽, но потратить их можно только на отдых. Куда, с кем и как ты поедешь?"],
+["Если бы тебе дали год и сказали вообще не работать — чем бы ты занимался(ась)?"],
+["Опиши свой идеальный свободный день — от пробуждения до сна."],
+["Что может моментально тебя выбесить?"],
+["Какая у тебя есть странность, привычка или пунктик, над которым смеются близкие?"],
+["Что ты категорически не ешь или не станешь есть даже за компанию?"],
+["Какая песня заставит тебя сказать «О, ЭТО МОЯ!» и начать подпевать?"],
+["Вспомни самую смешную, странную или абсурдную ситуацию за время работы в UraganAPART / FlatPoint."],
+["Есть ли у тебя фраза, слово или выражение, которое ты постоянно используешь на работе?"],
+["На один рабочий день тебе ОБЯЗАТЕЛЬНО нужно поменяться местами с кем-нибудь из команды. Кого выберешь и почему?"],
+["Расскажи про смешные особенности коллег.","Кто что постоянно говорит или делает? Кто всех спасает? Кто исчезает? Кто создаёт ещё десять задач? Можно сдать одного, можно пятерых 😂"],
+["Какие шуточные номинации ты бы дал(а) коллегам?","Можно придумать хоть одну, хоть восемь."],
+["Кого из коллег и за что ты особенно ценишь в работе?","Можно назвать одного человека, можно нескольких. Не надо писать красиво — лучше конкретный пример: кто тебя выручал, чему-то научил, всегда помогает, умеет успокоить или решает то, что никто другой не может."]
+];
+let i=0, answers=JSON.parse(localStorage.getItem("fp_answers")||"[]");
+function begin(){let n=document.getElementById("name").value.trim();if(!n)return alert("Напиши имя и фамилию");localStorage.setItem("fp_name",n);start.classList.add("hidden");quiz.classList.remove("hidden");render()}
+function render(){count.textContent=`Вопрос ${i+1} из ${questions.length}`;bar.style.width=`${(i+1)/questions.length*100}%`;question.textContent=questions[i][0];helper.textContent=questions[i][1]||"";answer.value=answers[i]||"";next.textContent=i===questions.length-1?"Отправить":"Дальше"}
+function save(){answers[i]=answer.value;localStorage.setItem("fp_answers",JSON.stringify(answers))}
+function next(){save();if(i<questions.length-1){i++;render();scrollTo(0,0)}else submit()}
+function prev(){save();if(i>0){i--;render();scrollTo(0,0)}}
+async function submit(){
+ const answerObject={};
+ questions.forEach((q,j)=>answerObject["q"+(j+1)]=answers[j]||"");
+ const payload={participant_name:localStorage.getItem("fp_name"),answers:answerObject};
+ try{let r=await fetch("https://qkwmavcydayirqhidelx.supabase.co/functions/v1/submit-corporate-quiz",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});if(!r.ok)throw 0;quiz.classList.add("hidden");done.classList.remove("hidden");localStorage.removeItem("fp_answers")}
+ catch(e){alert("Не получилось отправить. Ответы сохранены — попробуй ещё раз позже.")}
+}
+if(localStorage.getItem("fp_name")) document.getElementById("name").value=localStorage.getItem("fp_name");
+</script></body></html>
